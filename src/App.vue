@@ -1,27 +1,18 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import { ref } from 'vue';
+import ColorPicker from './components/ColorPicker';
+const color = ref('#cc0000');
 </script>
 
 <template>
-  <div>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="container vh-100" :style="{backgroundColor: color}">
+    <div class="d-flex flex-column gap-4 bg-white">
+      <h1>Color picker</h1>
+      <ColorPicker v-model="color" />
+      <hr />
+      {{color}}
+    </div>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+<style lang="scss" scoped>
 </style>
