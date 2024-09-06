@@ -4,13 +4,15 @@
     :style="{ backgroundColor: baseColor() }"
     @click="clickHandler"
   >
-  <div class="otus-color-picker__saturation-picker"></div>
+    <div class="otus-color-picker__saturation-picker"></div>
     <div class="otus-color-picker__lightness-picker"></div>
+    <Marker :x="x" :y="y"/>
   </div>
 </template>
 <script setup lang="ts">
-import { inject } from 'vue';
+import { inject, computed } from 'vue';
 import tinycolor2 from 'tinycolor2';
+import Marker from './Marker.vue';
 
 import type { ColorControl } from './index.vue';
 const colorControl = inject<ColorControl>('colorControl');
@@ -26,34 +28,27 @@ const clickHandler = (e: MouseEvent) => {
   ).getBoundingClientRect();
   const clickX = e.clientX - left;
   const clickY = e.clientY - top;
-
+  console.log(clickX, clickY, width)
   const saturation = clickX / width;
   const brightness = 1 - clickY / height;
+  console.log(saturation * 100, brightness * 100)
   const hsv = tinycolor2(colorControl?.color()).toHsv();
-  const updated = tinycolor2({ ...hsv, s: saturation * 100, v: brightness * 100 });
+  const updated = tinycolor2({
+    ...hsv,
+    s: saturation * 100,
+    v: brightness * 100
+  });
   colorControl?.update(updated.toHexString());
-  // console.log(hsl2rgb(hsv.h, saturation, brightness))
-  // colorControl?.update(hsl2rgb(hsv.h, saturation, brightness))
-  // const updated = tinycolor2({ ...hsv, s: saturation, v: brightness });
-  // colorControl?.update(updated.toHexString());
-  // const diagonal = Math.sqrt(width * width + height * height)
-  // const production = width * clickX + height * clickY
-  // const projection = production / diagonal
-  // console.log(projection)
-  // const lightness = 1 - projection / diagonal
-  // const lightness = Math.max(0, 1 - clickY / height)
-  // const lightness = (1 - clickY / height)
-  // const hsl = tinycolor2(colorControl?.color()).toHsl()
-  // const updated = tinycolor2({...hsl, s: saturation, l: lightness})
-  // colorControl?.update(updated.toHexString())
-  // console.log({saturation, lightness})
-  // const angle = clickX / width * 100
-  // const hsl = tinycolor2(colorControl?.color()).toHsl()
-  // hsl.h = angle
-  // const updated = tinycolor2({...hsl, h: angle})
-  // console.log(hsl, updated.toHexString())
-  // colorControl?.update(updated.toHexString())
 };
+const x = computed(() => {
+  const hsv = tinycolor2(colorControl?.color()).toHsv();
+  console.log(hsv.s * 100)
+  return hsv.s * 100;
+});
+const y = computed(() => {
+  const hsv = tinycolor2(colorControl?.color()).toHsv();
+  return 100 - hsv.v * 100;
+});
 </script>
 <style lang="scss" scoped>
 .otus-color-picker__lightness-and-saturation-picker {
