@@ -5,14 +5,13 @@ const color = ref('#cc0000');
 </script>
 
 <template>
-  <div class="container vh-100" :style="{backgroundColor: color}">
+  <div class="container vh-100">
     <div class="d-flex flex-column gap-4 bg-white">
-      <h1>Color picker</h1>
-      <ColorPicker v-model="color" />
-      <hr />
-      {{color}}
+      <label>
+        Color picker
+        <ColorPicker v-model="color" />
+      </label>
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

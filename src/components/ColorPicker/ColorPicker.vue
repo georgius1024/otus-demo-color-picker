@@ -1,5 +1,6 @@
 <template>
   <div class="otus-color-picker otus-color-picker__wrapper" ref="widgetRef">
+    <ColorSwatch />
     <input
       class="otus-color-picker__input"
       :value="colorValue"
@@ -15,6 +16,7 @@
 <script setup lang="ts">
 import { ref, provide } from 'vue';
 import { onClickOutside } from '@vueuse/core';
+import ColorSwatch from './ColorSwatch.vue';
 import HuePicker from './HuePicker.vue';
 import LightnessAndSaturationPicker from './LightnessAndSaturationPicker.vue';
 const props = defineProps({
@@ -47,7 +49,8 @@ const onChange = (event: Event) => {
   border: 1px solid #ccc;
   display: flex;
   padding: 4px;
-
+  align-items: center;
+  gap: 4px;
   &:focus-within {
     outline: 2px solid navy;
     outline-offset: 0px;
@@ -74,8 +77,8 @@ const onChange = (event: Event) => {
   transition: 200ms all ease;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 6px;
+  gap: 12px;
+  padding: 12px;
   &.open {
     opacity: 1;
     height: 250px;

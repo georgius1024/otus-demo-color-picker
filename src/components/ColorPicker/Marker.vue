@@ -18,7 +18,7 @@ defineProps({
   width: 16px;
   border-radius: 100%;
   border: 1px double #fff;
-  box-shadow: 1px 1px 2px #cccccc;
+  box-shadow: 1px 1px 2px #333;
   position: absolute;
   transform: translate(-50%, -50%);
   pointer-events: none;

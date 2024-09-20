@@ -27,8 +27,8 @@ const clickHandler = (e: MouseEvent) => {
   const brightness = 1 - clickY / height;
   colorHSV.value = {
     ...colorHSV.value,
-    s: saturation * 100,
-    v: brightness * 100
+    s: saturation,
+    v: brightness
   };
 };
 const x = computed(() => {
@@ -41,7 +41,7 @@ const y = computed(() => {
 <style lang="scss" scoped>
 .otus-color-picker__lightness-and-saturation-picker {
   height: 240px;
-  overflow: clip;
+  overflow: visible;
   border-radius: 4px;
   position: relative;
   display: block;
