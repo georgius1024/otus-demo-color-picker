@@ -2,12 +2,12 @@
   <div class="otus-color-picker otus-color-picker__wrapper" ref="widgetRef">
     <input
       class="otus-color-picker__input"
-      :value="modelValue"
+      :value="colorValue"
       @focus="popupOpen = true"
       @change="onChange"
     />
     <div class="otus-color-picker__popup" :class="{ open: popupOpen }">
-      <HuePicker/>
+      <HuePicker />
       <LightnessAndSaturationPicker />
     </div>
   </div>
@@ -17,10 +17,6 @@ import { ref, provide } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 import HuePicker from './HuePicker.vue';
 import LightnessAndSaturationPicker from './LightnessAndSaturationPicker.vue';
-export type ColorControl = {
-  color: () => string
-  update: (value: string) => void
-}
 const props = defineProps({
   modelValue: { type: String, required: true }
 });
@@ -28,18 +24,25 @@ const emit = defineEmits(['update:modelValue']);
 const popupOpen = ref(false);
 const widgetRef = ref(null);
 
-provide<ColorControl>('colorControl', {
-  color: () => props.modelValue,
-  update: (value: string) => emit('update:modelValue', value)
-});
+const colorValue = ref(props.modelValue);
+const onUpdate = (value: string) => {
+  emit('update:modelValue', value);
+  colorValue.value = value;
+};
+provide('ColorValue', colorValue);
+provide('ColorUpdate', onUpdate);
 
 onClickOutside(widgetRef, () => (popupOpen.value = false));
 
-const onChange = (event: Event) =>
-  emit('update:modelValue', (event.target as HTMLInputElement).value);
+const onChange = (event: Event) => {
+  const value = (event.target as HTMLInputElement).value;
+  onUpdate(value);
+};
 </script>
+
 <style lang="scss" scoped>
 .otus-color-picker__wrapper {
+  box-sizing: border-box;
   position: relative;
   border: 1px solid #ccc;
   display: flex;
@@ -69,6 +72,10 @@ const onChange = (event: Event) =>
   opacity: 0;
   height: 0;
   transition: 200ms all ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
   &.open {
     opacity: 1;
     height: 250px;

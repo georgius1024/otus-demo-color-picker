@@ -10,14 +10,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import { inject, computed } from 'vue';
+import { inject, computed, Ref } from 'vue';
 import tinycolor2 from 'tinycolor2';
 import Marker from './Marker.vue';
 
-import type { ColorControl } from './index.vue';
-const colorControl = inject<ColorControl>('colorControl');
+const colorValue = inject<Ref<string>>('ColorValue');
+const colorUpdate = inject<(e: string) => void>('ColorUpdate');
+
 const baseColor = () => {
-  const hsv = tinycolor2(colorControl?.color()).toHsv();
+  const hsv = tinycolor2(colorValue?.value).toHsv();
   return tinycolor2({ ...hsv, s: 1, v: 0.5 }).toHexString();
 };
 
@@ -32,21 +33,21 @@ const clickHandler = (e: MouseEvent) => {
   const saturation = clickX / width;
   const brightness = 1 - clickY / height;
   console.log(saturation * 100, brightness * 100)
-  const hsv = tinycolor2(colorControl?.color()).toHsv();
+  const hsv = tinycolor2(colorValue?.value).toHsv();
   const updated = tinycolor2({
     ...hsv,
     s: saturation * 100,
     v: brightness * 100
   });
-  colorControl?.update(updated.toHexString());
+  colorUpdate && colorUpdate(updated.toHexString());
 };
 const x = computed(() => {
-  const hsv = tinycolor2(colorControl?.color()).toHsv();
+  const hsv = tinycolor2(colorValue?.value).toHsv();
   console.log(hsv.s * 100)
   return hsv.s * 100;
 });
 const y = computed(() => {
-  const hsv = tinycolor2(colorControl?.color()).toHsv();
+  const hsv = tinycolor2(colorValue?.value).toHsv();
   return 100 - hsv.v * 100;
 });
 </script>

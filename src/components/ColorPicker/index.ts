@@ -1,3 +1,3 @@
-import ColorPicker from './index.vue'
+import ColorPicker from './ColorPicker.vue'
 
 export default ColorPicker
