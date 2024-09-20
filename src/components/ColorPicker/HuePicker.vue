@@ -4,25 +4,21 @@
   </div>
 </template>
 <script setup lang="ts">
-import { inject, computed, Ref } from 'vue';
-import tinycolor2 from 'tinycolor2';
+import { computed } from 'vue';
 import Marker from './Marker.vue';
-const colorValue = inject<Ref<string>>('ColorValue');
-const colorUpdate = inject<(e: string) => void>('ColorUpdate');
+import useContext from './Context';
+
+const { colorHSV } = useContext();
 const clickHandler = (e: MouseEvent) => {
   e.stopPropagation();
   const { left, width } = (e.target as HTMLDivElement).getBoundingClientRect();
   const clickX = e.clientX - left;
   const angle = (clickX / width) * 360;
-  if (colorUpdate && colorValue) {
-    const hsl = tinycolor2(colorValue?.value).toHsl();
-    colorUpdate(tinycolor2({ ...hsl, h: angle }).toHexString());
-  }
+  colorHSV.value = { ...colorHSV.value, h: angle }
 };
 
 const x = computed(() => {
-  const hsl = tinycolor2(colorValue?.value).toHsl();
-  return (hsl.h / 360) * 100;
+  return (colorHSV.value.h / 360) * 100;
 });
 </script>
 <style lang="scss" scoped>

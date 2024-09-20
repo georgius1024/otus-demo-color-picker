@@ -1,26 +1,20 @@
 <template>
   <div
     class="otus-color-picker__lightness-and-saturation-picker"
-    :style="{ backgroundColor: baseColor() }"
+    :style="{ backgroundColor: baseColor }"
     @click="clickHandler"
   >
     <div class="otus-color-picker__saturation-picker"></div>
     <div class="otus-color-picker__lightness-picker"></div>
-    <Marker :x="x" :y="y"/>
+    <Marker :x="x" :y="y" />
   </div>
 </template>
 <script setup lang="ts">
-import { inject, computed, Ref } from 'vue';
-import tinycolor2 from 'tinycolor2';
+import { computed } from 'vue';
 import Marker from './Marker.vue';
+import useContext from './Context';
 
-const colorValue = inject<Ref<string>>('ColorValue');
-const colorUpdate = inject<(e: string) => void>('ColorUpdate');
-
-const baseColor = () => {
-  const hsv = tinycolor2(colorValue?.value).toHsv();
-  return tinycolor2({ ...hsv, s: 1, v: 0.5 }).toHexString();
-};
+const { colorHSV, baseColor } = useContext();
 
 const clickHandler = (e: MouseEvent) => {
   e.stopPropagation();
@@ -29,26 +23,19 @@ const clickHandler = (e: MouseEvent) => {
   ).getBoundingClientRect();
   const clickX = e.clientX - left;
   const clickY = e.clientY - top;
-  console.log(clickX, clickY, width)
   const saturation = clickX / width;
   const brightness = 1 - clickY / height;
-  console.log(saturation * 100, brightness * 100)
-  const hsv = tinycolor2(colorValue?.value).toHsv();
-  const updated = tinycolor2({
-    ...hsv,
+  colorHSV.value = {
+    ...colorHSV.value,
     s: saturation * 100,
     v: brightness * 100
-  });
-  colorUpdate && colorUpdate(updated.toHexString());
+  };
 };
 const x = computed(() => {
-  const hsv = tinycolor2(colorValue?.value).toHsv();
-  console.log(hsv.s * 100)
-  return hsv.s * 100;
+  return colorHSV.value.s * 100;
 });
 const y = computed(() => {
-  const hsv = tinycolor2(colorValue?.value).toHsv();
-  return 100 - hsv.v * 100;
+  return 100 - colorHSV.value.v * 100;
 });
 </script>
 <style lang="scss" scoped>
