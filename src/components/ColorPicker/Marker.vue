@@ -1,16 +1,14 @@
 <template>
-    <div
+  <div
     class="otus-color-picker__marker"
     :style="{ left: `${x}%`, top: `${y ?? 50}%` }"
-  >
-  </div>
+  />
 </template>
 <script setup lang="ts">
-
 defineProps({
-  x: {type: Number},
-  y: {type: Number}
-})
+  x: { type: Number },
+  y: { type: Number }
+});
 </script>
 <style lang="scss" scoped>
 .otus-color-picker__marker {
