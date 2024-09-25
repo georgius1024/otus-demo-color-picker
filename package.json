@@ -3,12 +3,15 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://georgius1024.github.io/otus-demo-color-picker/",
   "scripts": {
     "dev": "vite --open",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "stylecheck": "prettier . --check",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "predeploy" : "npm run build",
+    "deploy" : "gh-pages -d dist"
   },
   "dependencies": {
     "@fontsource/roboto": "^5.0.14",
@@ -21,6 +24,7 @@
   "devDependencies": {
     "@types/tinycolor2": "^1.4.6",
     "@vitejs/plugin-vue": "^5.1.2",
+    "gh-pages": "^6.1.1",
     "prettier": "^3.3.3",
     "sass": "^1.77.8",
     "typescript": "^5.5.3",
