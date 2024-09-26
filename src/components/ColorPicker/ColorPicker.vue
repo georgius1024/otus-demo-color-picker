@@ -1,43 +1,26 @@
 <template>
   <div class="otus-color-picker otus-color-picker__wrapper" ref="widgetRef">
-    <div
-      class="otus-color-picker__color-swatch"
-      :style="{ backgroundColor: colorValue }"
-    ></div>
-    <input
+    <ColorSample :color="colorValue" />
+    <Input
       class="otus-color-picker__input"
-      :value="colorValue"
+      :color="colorValue"
       @focus="popupOpen = true"
-      @change="onChange"
+      @change="onUpdate"
     />
-    <div class="otus-color-picker__popup" :class="{ open: popupOpen }">
-      <div class="otus-color-picker__hue-picker" @click="hueClick">
-        <div
-          class="otus-color-picker__marker"
-          :style="{ left: `${hueX}%`, top: `${50}%` }"
-        />
-      </div>
-      <div
-        class="otus-color-picker__lightness-and-saturation-picker"
-        :style="{ backgroundColor: baseColor }"
-        @click="saturationHandler"
-      >
-        <div class="otus-color-picker__saturation-picker"></div>
-        <div class="otus-color-picker__lightness-picker"></div>
-        <div
-          class="otus-color-picker__marker"
-          :style="{ left: `${saturationX}%`, top: `${saturationY}%` }"
-        />
-      </div>
-    </div>
+    <Popup :open="popupOpen">
+      <HuePicker :color="colorValue" @change="onUpdate" />
+      <SaturationBrightnessPicker :color="colorValue" @change="onUpdate" />
+    </Popup>
   </div>
 </template>
 <script setup lang="ts">
-import { ref, provide, computed } from 'vue';
+import { ref } from 'vue';
 import { onClickOutside } from '@vueuse/core';
-import tinycolor2 from 'tinycolor2';
-
-type HSV = tinycolor2.ColorFormats.HSV;
+import Popup from './Popup.vue';
+import Input from './Input.vue';
+import HuePicker from './HuePicker.vue';
+import ColorSample from './ColorSample.vue';
+import SaturationBrightnessPicker from './SaturationBrightnessPicker.vue';
 
 const props = defineProps({
   modelValue: { type: String, required: true }
@@ -51,64 +34,11 @@ const onUpdate = (value: string) => {
   emit('update:modelValue', value);
   colorValue.value = value;
 };
-provide('ColorValue', colorValue);
-provide('ColorUpdate', onUpdate);
-
-const getHSV = (): HSV => tinycolor2(colorValue?.value).toHsv();
-const fromHSV = (value: HSV): string => tinycolor2(value).toHexString();
-const colorHSV = computed({
-  get: getHSV,
-  set: (value: HSV) => onUpdate(fromHSV(value))
-});
-const baseColor = computed<string>(() =>
-  tinycolor2({ ...colorHSV.value, s: 1, v: 1 }).toHexString()
-);
 
 onClickOutside(widgetRef, () => (popupOpen.value = false));
-
-const onChange = (event: Event) => {
-  const value = (event.target as HTMLInputElement).value;
-  onUpdate(value);
-};
-
-const hueClick = (e: MouseEvent) => {
-  e.stopPropagation();
-  const { left, width } = (e.target as HTMLDivElement).getBoundingClientRect();
-  const clickX = e.clientX - left;
-  const angle = (clickX / width) * 360;
-  colorHSV.value = { ...colorHSV.value, h: angle };
-};
-
-const saturationHandler = (e: MouseEvent) => {
-  e.stopPropagation();
-  const { left, top, width, height } = (
-    e.target as HTMLDivElement
-  ).getBoundingClientRect();
-  const clickX = e.clientX - left;
-  const clickY = e.clientY - top;
-  const saturation = clickX / width;
-  const brightness = 1 - clickY / height;
-  colorHSV.value = {
-    ...colorHSV.value,
-    s: saturation,
-    v: brightness
-  };
-};
-
-const hueX = computed(() => {
-  return (colorHSV.value.h / 360) * 100;
-});
-
-const saturationX = computed(() => {
-  return colorHSV.value.s * 100;
-});
-
-const saturationY = computed(() => {
-  return 100 - colorHSV.value.v * 100;
-});
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .otus-color-picker__wrapper {
   box-sizing: border-box;
   position: relative;
@@ -151,7 +81,7 @@ const saturationY = computed(() => {
     z-index: 1;
   }
 }
-.otus-color-picker__color-swatch {
+.otus-color-picker__color-sample {
   display: block;
   width: 24px;
   height: 24px;

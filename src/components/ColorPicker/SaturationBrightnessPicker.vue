@@ -11,10 +11,18 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
+import tinycolor2 from 'tinycolor2';
 import Marker from './Marker.vue';
-import useContext from './Context';
 
-const { colorHSV, baseColor } = useContext();
+const props = defineProps({
+  color: { type: String, required: true }
+});
+const emit = defineEmits(['change']);
+
+const baseColor = computed<string>(() => {
+  const HSV = tinycolor2(props.color).toHsv();
+  return tinycolor2({ ...HSV, s: 1, v: 1 }).toHexString();
+});
 
 const clickHandler = (e: MouseEvent) => {
   e.stopPropagation();
@@ -25,35 +33,18 @@ const clickHandler = (e: MouseEvent) => {
   const clickY = e.clientY - top;
   const saturation = clickX / width;
   const brightness = 1 - clickY / height;
-  colorHSV.value = {
-    ...colorHSV.value,
-    s: saturation,
-    v: brightness
-  };
+  const HSV = tinycolor2(props.color).toHsv();
+  emit(
+    'change',
+    tinycolor2({ ...HSV, s: saturation, v: brightness }).toHexString()
+  );
 };
 const x = computed(() => {
-  return colorHSV.value.s * 100;
+  const HSV = tinycolor2(props.color).toHsv();
+  return HSV.s * 100;
 });
 const y = computed(() => {
-  return 100 - colorHSV.value.v * 100;
+  const HSV = tinycolor2(props.color).toHsv();
+  return 100 - HSV.v * 100;
 });
 </script>
-<style lang="scss" scoped>
-.otus-color-picker__lightness-and-saturation-picker {
-  height: 240px;
-  overflow: visible;
-  border-radius: 4px;
-  position: relative;
-  display: block;
-  .otus-color-picker__lightness-picker {
-    position: absolute;
-    background: linear-gradient(to top, #000, #0000);
-    inset: 0;
-  }
-  .otus-color-picker__saturation-picker {
-    position: absolute;
-    background: linear-gradient(to right, #fff, #fff0);
-    inset: 0;
-  }
-}
-</style>
