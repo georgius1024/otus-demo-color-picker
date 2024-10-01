@@ -5,16 +5,16 @@
       class="otus-color-picker__input"
       :color="colorValue"
       @focus="popupOpen = true"
-      @change="onUpdate"
+      @change="colorUpdate"
     />
     <Popup :open="popupOpen">
-      <HuePicker :color="colorValue" @change="onUpdate" />
-      <SaturationBrightnessPicker :color="colorValue" @change="onUpdate" />
+      <HuePicker :color="colorValue" @change="colorUpdate" />
+      <SaturationBrightnessPicker :color="colorValue" @change="colorUpdate" />
     </Popup>
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, provide, Ref } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 import Popup from './Popup.vue';
 import Input from './Input.vue';
@@ -30,12 +30,17 @@ const popupOpen = ref(false);
 const widgetRef = ref(null);
 
 const colorValue = ref(props.modelValue);
-const onUpdate = (value: string) => {
+const colorUpdate = (value: string) => {
   emit('update:modelValue', value);
   colorValue.value = value;
 };
 
 onClickOutside(widgetRef, () => (popupOpen.value = false));
+
+provide<Ref<string>>('ColorValue', colorValue);
+provide<(value: string)=>void>('ColorUpdate', colorUpdate);
+
+
 </script>
 
 <style lang="scss">
