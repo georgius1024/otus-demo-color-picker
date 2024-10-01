@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, provide } from 'vue';
+import { ref, provide, computed, Ref } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 import ColorSwatch from './ColorSwatch.vue';
 import HuePicker from './HuePicker.vue';
@@ -26,19 +26,18 @@ const emit = defineEmits(['update:modelValue']);
 const popupOpen = ref(false);
 const widgetRef = ref(null);
 
-const colorValue = ref(props.modelValue);
-const onUpdate = (value: string) => {
+const colorValue = computed<string>(() => props.modelValue)
+const colorUpdate = (value: string) => {
   emit('update:modelValue', value);
-  colorValue.value = value;
 };
-provide('ColorValue', colorValue);
-provide('ColorUpdate', onUpdate);
+provide<Ref<string>>('ColorValue', colorValue);
+provide<(value: string)=>void>('ColorUpdate', colorUpdate);
 
 onClickOutside(widgetRef, () => (popupOpen.value = false));
 
 const onChange = (event: Event) => {
   const value = (event.target as HTMLInputElement).value;
-  onUpdate(value);
+  colorUpdate(value);
 };
 </script>
 

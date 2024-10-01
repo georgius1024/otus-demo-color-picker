@@ -12,9 +12,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import Marker from './Marker.vue';
-import useContext from './Context';
+import useColorContext from './ColorContext';
 
-const { colorHSV, baseColor } = useContext();
+const { colorHSV, baseColor } = useColorContext();
 
 const clickHandler = (e: MouseEvent) => {
   e.stopPropagation();

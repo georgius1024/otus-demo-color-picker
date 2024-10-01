@@ -6,9 +6,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import Marker from './Marker.vue';
-import useContext from './Context';
+import useColorContext from './ColorContext';
 
-const { colorHSV } = useContext();
+const { colorHSV } = useColorContext();
 const clickHandler = (e: MouseEvent) => {
   e.stopPropagation();
   const { left, width } = (e.target as HTMLDivElement).getBoundingClientRect();

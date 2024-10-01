@@ -2,8 +2,8 @@
   <div class="otus-color-picker__color-swatch" :style="{ backgroundColor: colorValue }"></div>
 </template>
 <script setup lang="ts">
-import useContext from './Context';
-const {colorValue} = useContext()
+import useColorContext from './ColorContext';
+const {colorValue} = useColorContext()
 </script>
 <style lang="scss">
 .otus-color-picker__color-swatch {
