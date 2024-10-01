@@ -1,11 +1,10 @@
 <template>
   <div
     class="otus-color-picker__color-sample"
-    :style="{ backgroundColor: color }"
+    :style="{ backgroundColor: colorValue }"
   ></div>
 </template>
 <script setup lang="ts">
-defineProps({
-  color: { type: String, required: true }
-});
+import { inject, Ref } from 'vue';
+const colorValue = inject<Ref<string>>('ColorValue');
 </script>

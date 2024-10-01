@@ -1,15 +1,10 @@
 <template>
   <div class="otus-color-picker otus-color-picker__wrapper" ref="widgetRef">
-    <ColorSample :color="colorValue" />
-    <Input
-      class="otus-color-picker__input"
-      :color="colorValue"
-      @focus="popupOpen = true"
-      @change="colorUpdate"
-    />
+    <ColorSample />
+    <Input class="otus-color-picker__input" @focus="popupOpen = true" />
     <Popup :open="popupOpen">
-      <HuePicker :color="colorValue" @change="colorUpdate" />
-      <SaturationBrightnessPicker :color="colorValue" @change="colorUpdate" />
+      <HuePicker />
+      <SaturationBrightnessPicker />
     </Popup>
   </div>
 </template>
@@ -38,9 +33,7 @@ const colorUpdate = (value: string) => {
 onClickOutside(widgetRef, () => (popupOpen.value = false));
 
 provide<Ref<string>>('ColorValue', colorValue);
-provide<(value: string)=>void>('ColorUpdate', colorUpdate);
-
-
+provide<(value: string) => void>('ColorUpdate', colorUpdate);
 </script>
 
 <style lang="scss">

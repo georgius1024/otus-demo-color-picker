@@ -1,20 +1,19 @@
 <template>
   <input
     class="otus-color-picker__input"
-    :value="color"
+    :value="colorValue"
     @focus="emit('focus')"
     @change="onChange"
   />
 </template>
 <script setup lang="ts">
-defineProps({
-  color: { type: String, required: true }
-});
-const emit = defineEmits(['change', 'focus']);
-
+import { inject, Ref } from 'vue';
+const colorValue = inject<Ref<string>>('ColorValue');
+const colorUpdate = inject<(value: string) => void>('ColorUpdate');
+const emit = defineEmits(['focus'])
 const onChange = (event: Event) => {
   const value = (event.target as HTMLInputElement).value;
-  emit('change', value);
+  colorUpdate && colorUpdate(value);
 };
 
 </script>
