@@ -28,9 +28,11 @@ const clickHandler = (e: MouseEvent) => {
   const brightness = 1 - clickY / height;
   colorHSV.value = { ...colorHSV.value, s: saturation, v: brightness };
 };
+
 const x = computed(() => {
   return colorHSV.value.s * 100;
 });
+
 const y = computed(() => {
   return 100 - colorHSV.value.v * 100;
 });
