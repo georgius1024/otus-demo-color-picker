@@ -10,17 +10,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, inject, Ref } from 'vue';
-import tinycolor2 from 'tinycolor2';
+import useColorContext from './ColorContext';
+
+import { computed } from 'vue';
+const { colorHSV, baseColor } = useColorContext();
+
 import Marker from './Marker.vue';
-
-const colorValue = inject<Ref<string>>('ColorValue');
-const colorUpdate = inject<(value: string) => void>('ColorUpdate');
-
-const baseColor = computed<string>(() => {
-  const HSV = tinycolor2(colorValue?.value).toHsv();
-  return tinycolor2({ ...HSV, s: 1, v: 1 }).toHexString();
-});
 
 const clickHandler = (e: MouseEvent) => {
   e.stopPropagation();
@@ -31,18 +26,12 @@ const clickHandler = (e: MouseEvent) => {
   const clickY = e.clientY - top;
   const saturation = clickX / width;
   const brightness = 1 - clickY / height;
-  const HSV = tinycolor2(colorValue?.value).toHsv();
-  colorUpdate &&
-    colorUpdate(
-      tinycolor2({ ...HSV, s: saturation, v: brightness }).toHexString()
-    );
+  colorHSV.value = { ...colorHSV.value, s: saturation, v: brightness };
 };
 const x = computed(() => {
-  const HSV = tinycolor2(colorValue?.value).toHsv();
-  return HSV.s * 100;
+  return colorHSV.value.s * 100;
 });
 const y = computed(() => {
-  const HSV = tinycolor2(colorValue?.value).toHsv();
-  return 100 - HSV.v * 100;
+  return 100 - colorHSV.value.v * 100;
 });
 </script>

@@ -7,9 +7,9 @@
   />
 </template>
 <script setup lang="ts">
-import { inject, Ref } from 'vue';
-const colorValue = inject<Ref<string>>('ColorValue');
-const colorUpdate = inject<(value: string) => void>('ColorUpdate');
+import useColorContext from './ColorContext';
+const {colorValue, colorUpdate} = useColorContext()
+
 const emit = defineEmits(['focus'])
 const onChange = (event: Event) => {
   const value = (event.target as HTMLInputElement).value;

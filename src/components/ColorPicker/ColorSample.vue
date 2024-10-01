@@ -5,6 +5,6 @@
   ></div>
 </template>
 <script setup lang="ts">
-import { inject, Ref } from 'vue';
-const colorValue = inject<Ref<string>>('ColorValue');
+import useColorContext from './ColorContext';
+const { colorValue } = useColorContext();
 </script>
